@@ -1,24 +1,11 @@
 import styles from "./GameSelector.module.css"
 
-interface GameSelectorProps {
-  currentGame: "blackjack" | "gofish"
-  setCurrentGame: (game: "blackjack" | "gofish") => void
-}
-
-const GameSelector = ({ currentGame, setCurrentGame }: GameSelectorProps) => {
+const GameSelector = () => {
   return (
     <div className={styles.gameSelector}>
       <button
-        className={`${styles.gameButton} ${currentGame === "blackjack" ? styles.active : ""}`}
-        onClick={() => setCurrentGame("blackjack")}
-      >
+        className={`${styles.gameButton} ${styles.active}`}>
         Blackjack
-      </button>
-      <button
-        className={`${styles.gameButton} ${currentGame === "gofish" ? styles.active : ""}`}
-        onClick={() => setCurrentGame("gofish")}
-      >
-        Go Fish
       </button>
     </div>
   )
