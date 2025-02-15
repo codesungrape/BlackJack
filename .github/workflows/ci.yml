@@ -28,25 +28,34 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Explicit cache configuration
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.npm
-            node_modules
-          key: node-cache-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
 
+      # Explicit cache configuration
+      - name: Cache node_modules
+        id: cache-npm
+        uses: actions/cache@v4
+        env:
+          cache-name: cache-node-modules # Added for clarity
+        with:
+          path: |
+            ~/.npm
+          key: node-cache-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: npm ci
         timeout-minutes: 10
+
+      # Add ESLint setup step
+      - name: Setup ESLint
+        run: |
+          if [ ! -f .eslintrc.json ]; then
+            echo '{"extends": "next/core-web-vitals"}' > .eslintrc.json
+          fi
 
       - name: Run linting
         run: npm run lint
