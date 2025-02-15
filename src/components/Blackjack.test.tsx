@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Blackjack from "./Blackjack";
-import * as deckUtils from "@/utils/deck";
+import * as deckUtils from "@/lib/utils/deck";
 // import { calculateHandValue, playerHand } from "./Blackjack";
 
 jest.mock("@/utils/deck");
