@@ -1,11 +1,14 @@
 name: Test
 
-on: 
-    push:
-        branches:
-          - main
-          - feature/*
-    
+on:
+  push:
+    branches:
+      - main
+      - feature/*
+  pull_request:
+    branches:
+      - main
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -14,34 +17,36 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Cache node_modules
-      - name: Cache node_modules
+      - name: Cache dependencies
         uses: actions/cache@v4
         with:
-          path: node_modules
+          path: |
+            **/node_modules
+            ~/.npm
           key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-modules-
 
-      # Step 3: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '22'
+          node-version: "22"
 
-      # Step 4: Install dependencies
       - name: Install dependencies
-        run: npm ci  # use npm ci for consistency with your lock file
+        run: npm ci
 
-      # Step 5: Run tests with coverage
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run type checking
+        run: npm run type-check
+
       - name: Run tests with coverage
-        run: npm test -- --coverage
+        run: npm test -- --coverage -- coverageReporters="text" --coverageReporters="lcov"
 
-      # Step 6: Display coverage report (This will print the path in the logs)
       - name: Display coverage report
         run: cat ./coverage/lcov-report/index.html
 
-      # Step 7: Upload coverage report as an artifact for easy download
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
