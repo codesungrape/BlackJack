@@ -163,7 +163,7 @@ const Blackjack = () => {
         <div className={styles.message}>{message}</div>
         <div className={styles.hands}>
           <div className={styles.hand}>
-            <h3>Dealer's Hand</h3>
+            <h3>Dealer&apos;s Hand</h3>
             <div className={styles.cards}>
               {dealerHand.map((card, index) => (
                 <Card
@@ -178,7 +178,7 @@ const Blackjack = () => {
             )}
           </div>
           <div className={styles.hand}>
-            <h3>Player's Hand({calculateHandValue(playerHand)})</h3>
+            <h3>Player&apos;s Hand({calculateHandValue(playerHand)})</h3>
             <div className={styles.cards}>
               {playerHand.map((card, index) => (
                 <Card key={index} {...card} />
