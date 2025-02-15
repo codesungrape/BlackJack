@@ -12,7 +12,7 @@ const customJestConfig = {
   moduleNameMapper: {
     // Handle module aliases (if you're using them in your Next.js project)
     "^@/components/(.*)$": "<rootDir>/src/components/$1",
-    "^@/utils/(.*)$": "<rootDir>/src/utils/$1",
+    "^@/lib/(.*)$": "<rootDir>/src/utils/$1",
   },
   collectCoverageFrom: [
     "src/components/**/*.{js, jsx, ts,tsx}",

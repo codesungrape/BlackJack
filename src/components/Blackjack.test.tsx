@@ -4,7 +4,7 @@ import Blackjack from "./Blackjack";
 import * as deckUtils from "@/lib/utils/deck";
 // import { calculateHandValue, playerHand } from "./Blackjack";
 
-jest.mock("@/utils/deck");
+jest.mock("@/lib/utils/deck");
 
 describe("Blackjack Component", () => {
   beforeEach(() => {
