@@ -1,14 +1,4 @@
-#This workflow will:
-
-# Check out your code
-# Set up Node.js with npm caching
-# Install dependencies
-# Run linting
-# Run tests with coverage checks
-# Upload coverage reports (even if tests fail)
-# Build the project
-
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -21,23 +11,20 @@ on:
       - main
 
 jobs:
-  build-and-test:
+  test-and-build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Explicit cache configuration
-      - name: Cache node_modules
-        id: cache-npm
+      - name: Cache dependencies
         uses: actions/cache@v4
-        env:
-          cache-name: cache-node-modules # Added for clarity
         with:
           path: |
+            **/node_modules
             ~/.npm
-          key: node-cache-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
@@ -50,16 +37,12 @@ jobs:
         run: npm ci
         timeout-minutes: 10
 
-      # Add ESLint setup step
-      - name: Setup ESLint
-        run: |
-          if [ ! -f .eslintrc.json ]; then
-            echo '{"extends": "next/core-web-vitals"}' > .eslintrc.json
-          fi
-
       - name: Run linting
         run: npm run lint
         timeout-minutes: 5
+
+      - name: Run type checking
+        run: npm run type-check
 
       - name: Run tests with coverage
         run: |
@@ -68,14 +51,12 @@ jobs:
           NODE_ENV: test
         timeout-minutes: 15
 
-      - name: Upload test coverage
+      - name: Upload coverage report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: |
-            coverage/
-            src/components/
+          path: coverage
           retention-days: 7
 
       - name: Build project
