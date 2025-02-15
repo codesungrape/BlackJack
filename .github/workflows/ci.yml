@@ -1,3 +1,13 @@
+#This workflow will:
+
+# Check out your code
+# Set up Node.js with npm caching
+# Install dependencies
+# Run linting
+# Run tests with coverage checks
+# Upload coverage reports (even if tests fail)
+# Build the project
+
 name: CI
 
 on:
@@ -15,7 +25,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Get code fromt the repo
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -23,16 +32,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
-          cache: "npm" # This enables built-in npm caching, which replaces all below. If fine-grained control is needed over caching behavior is needed, use below.
-      # - name: Cache dependencies
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: ~/.npm
-      #     #creates a unique key for the cache
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      # fallback jeys if exact match isn't found
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -42,29 +42,25 @@ jobs:
         run: npm run lint
         timeout-minutes: 5
 
-      - name: Run tests
-        run: npm test
+      - name: Run tests with coverage
+        run: |
+          npm test -- --coverage --coverageThreshold='{"global":{"branches":80,"functions":80,"lines":80,"statements":80}}'
         env:
           NODE_ENV: test
         timeout-minutes: 15
+
+      - name: Upload test coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: |
+            coverage/
+            src/components/
+          retention-days: 7
 
       - name: Build project
         run: npm run build
         timeout-minutes: 15
         env:
           NODE_ENV: production
-
-      - name: Upload test coverage
-        if: always() # Runs even if previous steps fail
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: coverage/ # Where test coverage reports are saved
-          retention-days: 7
-
-      - name: Cleanup npm cache
-        if: always()
-        run: |
-          npm cache verify
-          npm cache clean --force
-        continue-on-error: true # Won't fail the workflow if cleanup fails
