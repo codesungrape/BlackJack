@@ -42,7 +42,7 @@ jobs:
         run: npm run type-check
 
       - name: Run tests with coverage
-        run: npm test -- --coverage -- coverageReporters="text" --coverageReporters="lcov"
+        run: npm test -- --coverage --coverageReporters="text" --coverageReporters="lcov"
 
       - name: Display coverage report
         run: cat ./coverage/lcov-report/index.html
