@@ -17,17 +17,6 @@ const values = [
   "A",
 ];
 
-export const createGoFishDeck = (): CardProps[] => {
-  const deck: CardProps[] = [];
-  for (let i = 0; i < 1; i++) {
-    for (const suit of suits) {
-      for (const value of values) {
-        deck.push({ suit, value });
-      }
-    }
-  }
-  return shuffleDeck(deck);
-};
 
 export const createBlackjackDeck = (): CardProps[] => {
   const deck: CardProps[] = [];
